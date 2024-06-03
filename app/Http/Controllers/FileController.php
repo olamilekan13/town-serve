@@ -14,7 +14,7 @@ class FileController extends Controller
     {
         // Validate the incoming request
         $request->validate([
-            'pdf_file' => 'required|mimes:pdf|max:2048',
+            'pdf_file' => 'required|mimes:pdf',
         ]);
 
         // Store the file
@@ -26,7 +26,7 @@ class FileController extends Controller
         $file->path = $path;
         $file->save();
         // dd($file);
-        Mail::to('olamilekan1312@gmail.com')->send(new PdfMail($file->path));
+        Mail::to('olamilekan1312@gmail.com')->send(new PdfMail($file->path,$file->name));
 
 
         return response()->json(['message' => 'File uploaded successfully']);

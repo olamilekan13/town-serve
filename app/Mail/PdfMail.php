@@ -15,13 +15,15 @@ class PdfMail extends Mailable
     use Queueable, SerializesModels;
 
     public $filePath;
+    public $fileName;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($filePath)
+    public function __construct($filePath,$fileName)
     {
         $this->filePath = $filePath;
+        $this->fileName = $fileName;
     }
 
     /**
@@ -30,7 +32,7 @@ class PdfMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pdf Mail',
+            subject: 'Townserve',
         );
     }
 
@@ -53,7 +55,7 @@ class PdfMail extends Mailable
     {
         return [
             Attachment::fromPath(storage_path('app/public/' . $this->filePath))
-                ->as('document.pdf')
+                ->as($this->fileName)
                 ->withMime('application/pdf'),
         ];
     }
