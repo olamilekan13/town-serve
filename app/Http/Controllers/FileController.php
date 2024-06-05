@@ -11,24 +11,30 @@ use App\Models\File;
 class FileController extends Controller
 {
     public function upload(Request $request)
+
     {
-        // Validate the incoming request
-        $request->validate([
-            'pdf_file' => 'required|mimes:pdf',
-        ]);
+        try{
+            // Validate the incoming request
+            $request->validate([
+                'pdf_file' => 'required|mimes:pdf',
+            ]);
 
-        // Store the file
-        $path = $request->file('pdf_file')->store('pdfs', 'public');
+            // Store the file
+            $path = $request->file('pdf_file')->store('pdfs', 'public');
 
-        // Save file information to the database
-        $file = new File();
-        $file->name = $request->file('pdf_file')->getClientOriginalName();
-        $file->path = $path;
-        $file->save();
-        // dd($file);
-        Mail::to('olamilekan1312@gmail.com')->send(new PdfMail($file->path,$file->name));
+            // Save file information to the database
+            $file = new File();
+            $file->name = $request->file('pdf_file')->getClientOriginalName();
+            $file->path = $path;
+            $file->save();
+            // dd($file);
+            Mail::to('tmfbapplicationform@gmail.com')->send(new PdfMail($file->path,$file->name));
 
+            return response()->json(['message' => 'File uploaded successfully']);
 
-        return response()->json(['message' => 'File uploaded successfully']);
+        }catch (\Exception $e){
+        // Return Json Response
+        return response()->json(['message' => $e->getMessage()],500);
+        }
     }
 }
